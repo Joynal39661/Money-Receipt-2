@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Receipt Generator</title>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    .receipt { border: 2px solid #007bff; padding: 20px; margin-top: 20px; width: 600px; }
+    .label { font-weight: bold; }
+    input { width: 300px; margin-bottom: 10px; padding: 5px; }
+  </style>
+</head>
+<body>
+  <h2>Money Receipt Generator</h2>
+  <div>
+    <label>Name:</label><br><input type="text" id="name"><br>
+    <label>Address:</label><br><input type="text" id="address"><br>
+    <label>Month Range:</label><br><input type="text" id="month"><br>
+    <label>Amount (TK):</label><br><input type="number" id="amount"><br>
+    <button onclick="generateReceipt()">Generate Receipt</button>
+  </div>
+
+  <div class="receipt" id="receipt" style="display:none;">
+    <h3>Receipt</h3>
+    <p><span class="label">Received from:</span> <span id="r_name"></span></p>
+    <p><span class="label">Address:</span> <span id="r_address"></span></p>
+    <p><span class="label">For:</span> <span id="r_month"></span></p>
+    <p><span class="label">Amount:</span> <span id="r_amount"></span> TK</p>
+    <p><span class="label">In Words:</span> <span id="r_words"></span></p>
+    <p><span class="label">Date:</span> <span id="r_date"></span></p>
+    <p>Authorized Signature: ___________________</p>
+  </div>
+
+  <script>
+    function generateReceipt() {
+      const name = document.getElementById('name').value;
+      const address = document.getElementById('address').value;
+      const month = document.getElementById('month').value;
+      const amount = parseFloat(document.getElementById('amount').value);
+      const today = new Date().toLocaleDateString();
+
+      document.getElementById('r_name').textContent = name;
+      document.getElementById('r_address').textContent = address;
+      document.getElementById('r_month').textContent = month;
+      document.getElementById('r_amount').textContent = amount.toFixed(2);
+      document.getElementById('r_words').textContent = numberToWords(amount) + " Taka only";
+      document.getElementById('r_date').textContent = today;
+      document.getElementById('receipt').style.display = 'block';
+    }
+
+    function numberToWords(num) {
+      const a = ["Zero","One","Two","Three","Four","Five","Six","Seven","Eight","Nine","Ten",
+        "Eleven","Twelve","Thirteen","Fourteen","Fifteen","Sixteen","Seventeen","Eighteen","Nineteen"];
+      const b = ["","","Twenty","Thirty","Forty","Fifty","Sixty","Seventy","Eighty","Ninety"];
+      if ((num = num.toString()).length > 9) return 'Overflow';
+      let n = ('000000000' + num).substr(-9).match(/^(\d{2})(\d{2})(\d{2})(\d{1})(\d{2})$/);
+      if (!n) return; let str = '';
+      str += (n[1] != 0) ? (a[Number(n[1])] || b[n[1][0]] + ' ' + a[n[1][1]]) + ' Crore ' : '';
+      str += (n[2] != 0) ? (a[Number(n[2])] || b[n[2][0]] + ' ' + a[n[2][1]]) + ' Lakh ' : '';
+      str += (n[3] != 0) ? (a[Number(n[3])] || b[n[3][0]] + ' ' + a[n[3][1]]) + ' Thousand ' : '';
+      str += (n[4] != 0) ? (a[Number(n[4])] || b[n[4][0]] + ' ' + a[n[4][1]]) + ' Hundred ' : '';
+      str += (n[5] != 0) ? ((str != '') ? 'and ' : '') + (a[Number(n[5])] || b[n[5][0]] + ' ' + a[n[5][1]]) : '';
+      return str.trim();
+    }
+  </script>
+</body>
+</html>
